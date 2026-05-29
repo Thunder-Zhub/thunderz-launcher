@@ -1,0 +1,49 @@
+{
+  "name": "thunderz-launcher",
+  "version": "1.0.0",
+  "description": "ThunderZ Minecraft Hub Launcher",
+  "main": "main.js",
+  "author": "ThunderZ",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.3"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.thunderz.launcher",
+    "productName": "ThunderZ Launcher",
+    "copyright": "Copyright © 2025 ThunderZ",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ThunderZ Launcher",
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "displayLanguageSelector": false,
+      "language": "1054"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "assets/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    }
+  }
+}
