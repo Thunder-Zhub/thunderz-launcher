@@ -1332,3 +1332,66 @@ input[type=range]::-webkit-slider-thumb {
   color: var(--text3);
   font-size: 14px;
 }
+/* ===== Update Bar ===== */
+#update-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg2);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 4000;
+  min-width: 340px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  animation: slideUp 0.3s ease;
+}
+
+#update-bar-text {
+  font-size: 13px;
+  color: var(--text);
+  flex: 1;
+}
+
+#update-bar-track {
+  width: 120px;
+  height: 6px;
+  background: var(--bg4);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+#update-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+#update-bar-close {
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+}
+
+#update-install-btn {
+  background: var(--accent);
+  color: var(--accent-text);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-family: var(--font);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+#update-install-btn:hover {
+  background: var(--accent2);
+}

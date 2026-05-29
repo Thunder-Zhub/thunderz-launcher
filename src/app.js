@@ -1067,6 +1067,72 @@ function startPlaytimeSession() {
   }, 1000);
 }
 
+// ===== Auto Update UI =====
+function initAutoUpdater() {
+  if (!window.electronAPI) return;
+
+  window.electronAPI.onUpdateAvailable((version) => {
+    showToast('🔔', `มีเวอร์ชันใหม่ v${version} กำลังดาวน์โหลด...`, 'success');
+    showUpdateBar(`กำลังดาวน์โหลด v${version}...`, 0);
+  });
+
+  window.electronAPI.onUpdateProgress((percent) => {
+    updateProgressBar(percent);
+  });
+
+  window.electronAPI.onUpdateReady(() => {
+    showUpdateBarReady();
+  });
+
+  window.electronAPI.onUpdateNone(() => {
+    console.log('แอปเป็นเวอร์ชันล่าสุดแล้ว');
+  });
+
+  window.electronAPI.onUpdateError((msg) => {
+    showToast('⚠', `อัพเดทล้มเหลว: ${msg}`, 'error');
+  });
+}
+
+function showUpdateBar(text, percent) {
+  let bar = document.getElementById('update-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'update-bar';
+    bar.innerHTML = `
+      <div id="update-bar-text">${text}</div>
+      <div id="update-bar-track">
+        <div id="update-bar-fill" style="width:${percent}%"></div>
+      </div>
+      <button id="update-bar-close">✕</button>
+    `;
+    document.body.appendChild(bar);
+    document.getElementById('update-bar-close').addEventListener('click', () => bar.remove());
+  }
+}
+
+function updateProgressBar(percent) {
+  const fill = document.getElementById('update-bar-fill');
+  const text = document.getElementById('update-bar-text');
+  if (fill) fill.style.width = `${percent}%`;
+  if (text) text.textContent = `ดาวน์โหลด... ${percent}%`;
+}
+
+function showUpdateBarReady() {
+  const text = document.getElementById('update-bar-text');
+  const track = document.getElementById('update-bar-track');
+  if (text) text.textContent = '✅ ดาวน์โหลดเสร็จแล้ว พร้อม Restart';
+  if (track) track.style.display = 'none';
+
+  const bar = document.getElementById('update-bar');
+  if (bar) {
+    const btn = document.createElement('button');
+    btn.id = 'update-install-btn';
+    btn.textContent = 'Restart & Install';
+    btn.addEventListener('click', () => window.electronAPI.installUpdate());
+    bar.appendChild(btn);
+  }
+}
+
 // ===== Init =====
 function init() {
   loadState();
@@ -1098,6 +1164,7 @@ function init() {
   });
 
   showToast('⚡', 'ThunderZ Launcher พร้อมใช้งาน!', 'success');
+  initAutoUpdater();
 }
 
 document.addEventListener('DOMContentLoaded', init);

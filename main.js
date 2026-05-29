@@ -2,6 +2,8 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
+const { autoUpdater } = require('electron-updater');
+autoUpdater.logger = null;
 
 // ===== App Settings =====
 const ICON_PATH = path.join(__dirname, 'assets', 'icon.ico');
@@ -32,6 +34,7 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
+    setTimeout(() => autoUpdater.checkForUpdates(), 3000);
   });
 
   mainWindow.on('closed', () => {
@@ -209,4 +212,33 @@ ipcMain.handle('curse:launch', async (event, exePath, instanceName, serverIp, se
   } catch (err) {
     return { success: false, error: err.message };
   }
+});
+
+// ===== Auto Updater =====
+ipcMain.handle('update:check', () => {
+  autoUpdater.checkForUpdates();
+});
+
+ipcMain.handle('update:install', () => {
+  autoUpdater.quitAndInstall();
+});
+
+autoUpdater.on('update-available', (info) => {
+  if (mainWindow) mainWindow.webContents.send('update:available', info.version);
+});
+
+autoUpdater.on('download-progress', (progress) => {
+  if (mainWindow) mainWindow.webContents.send('update:progress', Math.round(progress.percent));
+});
+
+autoUpdater.on('update-downloaded', () => {
+  if (mainWindow) mainWindow.webContents.send('update:ready');
+});
+
+autoUpdater.on('update-not-available', () => {
+  if (mainWindow) mainWindow.webContents.send('update:none');
+});
+
+autoUpdater.on('error', (err) => {
+  if (mainWindow) mainWindow.webContents.send('update:error', err.message);
 });

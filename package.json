@@ -20,6 +20,11 @@
     "appId": "com.thunderz.launcher",
     "productName": "ThunderZ Launcher",
     "copyright": "Copyright © 2025 ThunderZ",
+    "publish": {
+      "provider": "github",
+      "owner": "Thunder-Zhub",
+      "repo": "thunderz-launcher"
+    },
     "win": {
       "target": "nsis",
       "icon": "assets/icon.ico"

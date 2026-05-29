@@ -15,4 +15,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getCurseInstances: (exePath) => ipcRenderer.invoke('curse:getInstances', exePath),
   launchPrism: (exePath, instance, ip, port) => ipcRenderer.invoke('prism:launch', exePath, instance, ip, port),
   launchCurse: (exePath, instance, ip, port) => ipcRenderer.invoke('curse:launch', exePath, instance, ip, port),
+
+  // Auto Update
+  checkUpdate: () => ipcRenderer.invoke('update:check'),
+  installUpdate: () => ipcRenderer.invoke('update:install'),
+  onUpdateAvailable: (cb) => ipcRenderer.on('update:available', (_, ver) => cb(ver)),
+  onUpdateProgress: (cb) => ipcRenderer.on('update:progress', (_, pct) => cb(pct)),
+  onUpdateReady: (cb) => ipcRenderer.on('update:ready', () => cb()),
+  onUpdateNone: (cb) => ipcRenderer.on('update:none', () => cb()),
+  onUpdateError: (cb) => ipcRenderer.on('update:error', (_, msg) => cb(msg)),
 });
