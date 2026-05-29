@@ -223,6 +223,11 @@ ipcMain.handle('update:install', () => {
   autoUpdater.quitAndInstall();
 });
 
+// Get real app version from package.json
+ipcMain.handle('app:getVersion', () => {
+  return app.getVersion();
+});
+
 autoUpdater.on('update-available', (info) => {
   if (mainWindow) mainWindow.webContents.send('update:available', info.version);
 });
