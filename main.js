@@ -121,6 +121,35 @@ ipcMain.handle('dialog:openDirectory', async () => {
 
   return result.canceled ? null : result.filePaths[0];
 });
+
+// Bug fix: server:ping handler was missing — preload exposed it but main never handled it
+ipcMain.handle('server:ping', async (event, host, port) => {
+  return new Promise((resolve) => {
+    const net = require('net');
+    const start = Date.now();
+    const socket = new net.Socket();
+    const timeout = 3000;
+
+    socket.setTimeout(timeout);
+
+    socket.on('connect', () => {
+      const ms = Date.now() - start;
+      socket.destroy();
+      resolve({ online: true, ms });
+    });
+
+    socket.on('timeout', () => {
+      socket.destroy();
+      resolve({ online: false, ms: null });
+    });
+
+    socket.on('error', () => {
+      resolve({ online: false, ms: null });
+    });
+
+    socket.connect(port || 25565, host);
+  });
+});
 // Read Prism Launcher instances
 ipcMain.handle('prism:getInstances', async (event, prismExePath) => {
   try {

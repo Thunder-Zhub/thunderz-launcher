@@ -44,6 +44,7 @@ const i18n = {
     'settings.javadir': 'Java Path',
     'settings.ram': 'RAM สูงสุด',
     'settings.browse': 'เลือก',
+    'settings.launcherPath': 'Launcher Path',
     'status.online': 'ออนไลน์',
     'modal.addLauncher': 'เพิ่ม Launcher',
     'modal.addServer': 'เพิ่มเซิร์ฟเวอร์',
@@ -70,6 +71,75 @@ const i18n = {
     'theme.bluered': 'ฟ้าแดง',
     'theme.bluenavy': 'ฟ้าน้ำเงิน',
     'theme.green': 'เขียวดำ',
+    'common.start': 'เริ่ม',
+    'common.select': 'เลือก',
+    'common.delete': 'ลบ',
+    'common.open': 'เปิด',
+    'common.clear': 'ล้าง',
+    'common.connect': 'เชื่อมต่อ',
+    'common.loading': 'กำลังโหลด...',
+    'common.notSet': 'ยังไม่ได้ตั้งค่า',
+    'common.readyConfigured': '✓ ตั้งค่าแล้ว — พร้อมใช้งาน',
+    'empty.launchers.none': 'ยังไม่มี Launcher',
+    'empty.launchers.addGuide': 'ยังไม่มี Launcher<br>กดปุ่ม "เพิ่ม Launcher" เพื่อเริ่มต้น',
+    'empty.servers.none': 'ยังไม่มีเซิร์ฟเวอร์',
+    'empty.servers.modal': 'ยังไม่มีเซิร์ฟเวอร์ที่บันทึกไว้',
+    'launcher.path.title': 'ตั้งค่า Path Launchers',
+    'launcher.path.note': '💾 Path บันทึกอัตโนมัติ — ไม่ต้องเลือกใหม่ทุกครั้ง',
+    'launcher.path.status.empty': 'ยังไม่ได้ตั้งค่า',
+    'launcher.path.status.ready': '✓ ตั้งค่าแล้ว — พร้อมใช้งาน',
+    'launcher.path.lunar.launch': 'เปิด Lunar Client',
+    'launcher.path.curse.launch': 'เปิด CurseForge',
+    'launcher.path.prism.launch': 'เปิด Prism Launcher',
+    'launcher.path.lunar.save': 'บันทึก path Lunar Client แล้ว',
+    'launcher.path.curse.save': 'บันทึก path CurseForge แล้ว',
+    'launcher.path.prism.save': 'ตั้งค่า Prism Launcher Path แล้ว',
+    'launcher.path.lunar.clear': 'ล้าง path Lunar Client แล้ว',
+    'launcher.path.curse.clear': 'ล้าง path CurseForge แล้ว',
+    'launcher.path.lunar.required': 'กรุณาตั้งค่า Path ของ Lunar Client ใน Settings → Launcher Path ก่อน',
+    'launcher.path.curse.required': 'กรุณาตั้งค่า Path ของ CurseForge ใน Settings → Launcher Path ก่อน',
+    'launcher.path.prism.required': 'กรุณาตั้งค่า Path ของ Prism Launcher ใน Settings → Launcher Path ก่อน',
+    'launcher.path.open': 'เปิด',
+    'modal.instance.prism': 'เลือก Instance (Prism)',
+    'modal.instance.curse': 'เลือก Modpack (CurseForge)',
+    'modal.instance.desc': 'เลือก instance ที่ต้องการเปิด',
+    'modal.instance.descWithServer': 'จะเข้าเซิร์ฟเวอร์ {ip} หลังเปิด instance',
+    'modal.instance.loading': 'กำลังโหลด...',
+    'modal.instance.launch': 'เปิด',
+    'common.launching': 'กำลังเปิด {name}',
+    'common.launchingToServer': 'กำลังเปิด {name} → เข้า {server} ({ip})',
+    'toast.theme.changed': 'เปลี่ยนธีมเป็น "{name}"',
+    'toast.launcher.add': 'เพิ่ม "{name}" แล้ว',
+    'toast.launcher.select': 'เลือก "{name}" เป็น Launcher หลักแล้ว',
+    'toast.launcher.delete': 'ลบ "{name}" แล้ว',
+    'toast.launcher.requireOne': 'ต้องมี Launcher อย่างน้อย 1 ตัว',
+    'toast.launcher.missing': 'ไม่พบ Launcher',
+    'toast.launcher.addMissingName': 'กรุณาใส่ชื่อ Launcher',
+    'toast.launcher.addMissingPath': 'กรุณาใส่ Path ของ Launcher',
+    'toast.launcher.previewOnly': 'ฟีเจอร์นี้ใช้ได้เฉพาะใน Electron App',
+    'toast.server.added': 'เพิ่มเซิร์ฟเวอร์ "{name}" แล้ว',
+    'toast.server.delete': 'ลบ "{name}" แล้ว',
+    'toast.server.addMissingName': 'กรุณาใส่ชื่อเซิร์ฟเวอร์',
+    'toast.server.addMissingIp': 'กรุณาใส่ IP เซิร์ฟเวอร์',
+    'toast.launcher.chooseInstance': 'กรุณาเลือก instance ก่อน',
+    'toast.launcher.launchFailed': 'เปิดไม่ได้: {error}',
+    'toast.launcher.launchGeneric': 'เปิด Launcher ไม่สำเร็จ',
+    'toast.launcher.opened': 'เปิด {name}: {instance}{server}',
+    'toast.launcher.pathSaved': 'บันทึก path {name} แล้ว',
+    'toast.launcher.pathCleared': 'ล้าง path {name} แล้ว',
+    'toast.launcher.requiredPath': 'กรุณาตั้งค่า path ของ {name} ก่อน',
+    'toast.launcher.opening': 'กำลังเปิด {name}...',
+    'toast.app.ready': 'ThunderZ Launcher พร้อมใช้งาน!',
+    'toast.app.updateAvailable': 'มีเวอร์ชันใหม่ v{version} กำลังดาวน์โหลด...',
+    'toast.app.updateFailed': 'อัพเดทล้มเหลว: {message}',
+    'toast.app.updateReady': 'ดาวน์โหลดเสร็จแล้ว พร้อม Restart',
+    'toast.app.restartInstall': 'Restart & Install',
+    'toast.lang.th': 'เปลี่ยนภาษาเป็นไทย',
+    'toast.lang.en': 'Language changed to English',
+    'toast.lang.ru': 'Язык изменён на русский',
+    'titlebar.minimize': 'ย่อหน้าต่าง',
+    'titlebar.maximize': 'ขยายหน้าต่าง',
+    'titlebar.close': 'ปิด',
   },
   en: {
     'app.name': 'ThunderZ',
@@ -111,6 +181,7 @@ const i18n = {
     'settings.javadir': 'Java Path',
     'settings.ram': 'Max RAM',
     'settings.browse': 'Browse',
+    'settings.launcherPath': 'Launcher Path',
     'status.online': 'Online',
     'modal.addLauncher': 'Add Launcher',
     'modal.addServer': 'Add Server',
@@ -137,6 +208,75 @@ const i18n = {
     'theme.bluered': 'Blue Red',
     'theme.bluenavy': 'Navy Blue',
     'theme.green': 'Green Black',
+    'common.start': 'Start',
+    'common.select': 'Select',
+    'common.delete': 'Delete',
+    'common.open': 'Open',
+    'common.clear': 'Clear',
+    'common.connect': 'Connect',
+    'common.loading': 'Loading...',
+    'common.notSet': 'Not configured yet',
+    'common.readyConfigured': '✓ Configured — Ready',
+    'empty.launchers.none': 'No Launchers yet',
+    'empty.launchers.addGuide': 'No Launchers yet<br>Press "Add Launcher" to get started',
+    'empty.servers.none': 'No servers yet',
+    'empty.servers.modal': 'No saved servers yet',
+    'launcher.path.title': 'Launcher Path Settings',
+    'launcher.path.note': '💾 Paths are saved automatically — no need to re-select each time',
+    'launcher.path.status.empty': 'Not configured yet',
+    'launcher.path.status.ready': '✓ Configured — Ready',
+    'launcher.path.lunar.launch': 'Open Lunar Client',
+    'launcher.path.curse.launch': 'Open CurseForge',
+    'launcher.path.prism.launch': 'Open Prism Launcher',
+    'launcher.path.lunar.save': 'Lunar Client path saved',
+    'launcher.path.curse.save': 'CurseForge path saved',
+    'launcher.path.prism.save': 'Prism Launcher path saved',
+    'launcher.path.lunar.clear': 'Lunar Client path cleared',
+    'launcher.path.curse.clear': 'CurseForge path cleared',
+    'launcher.path.lunar.required': 'Please set the Lunar Client path in Settings → Launcher Path first',
+    'launcher.path.curse.required': 'Please set the CurseForge path in Settings → Launcher Path first',
+    'launcher.path.prism.required': 'Please set the Prism Launcher path in Settings → Launcher Path first',
+    'launcher.path.open': 'Open',
+    'modal.instance.prism': 'Select Instance (Prism)',
+    'modal.instance.curse': 'Select Modpack (CurseForge)',
+    'modal.instance.desc': 'Choose the instance to open',
+    'modal.instance.descWithServer': 'Will join server {ip} after opening the instance',
+    'modal.instance.loading': 'Loading...',
+    'modal.instance.launch': 'Open',
+    'common.launching': 'Opening {name}',
+    'common.launchingToServer': 'Opening {name} → joining {server} ({ip})',
+    'toast.theme.changed': 'Theme changed to "{name}"',
+    'toast.launcher.add': 'Added "{name}"',
+    'toast.launcher.select': 'Selected "{name}" as the main launcher',
+    'toast.launcher.delete': 'Deleted "{name}"',
+    'toast.launcher.requireOne': 'You need at least 1 launcher',
+    'toast.launcher.missing': 'Launcher not found',
+    'toast.launcher.addMissingName': 'Please enter a launcher name',
+    'toast.launcher.addMissingPath': 'Please enter the launcher path',
+    'toast.launcher.previewOnly': 'This feature is available only in the Electron app',
+    'toast.server.added': 'Added server "{name}"',
+    'toast.server.delete': 'Deleted server "{name}"',
+    'toast.server.addMissingName': 'Please enter a server name',
+    'toast.server.addMissingIp': 'Please enter a server IP',
+    'toast.launcher.chooseInstance': 'Please select an instance first',
+    'toast.launcher.launchFailed': 'Could not open: {error}',
+    'toast.launcher.launchGeneric': 'Failed to launch launcher',
+    'toast.launcher.opened': 'Opened {name}: {instance}{server}',
+    'toast.launcher.pathSaved': '{name} path saved',
+    'toast.launcher.pathCleared': '{name} path cleared',
+    'toast.launcher.requiredPath': 'Please set the path for {name} first',
+    'toast.launcher.opening': 'Opening {name}...',
+    'toast.app.ready': 'ThunderZ Launcher is ready!',
+    'toast.app.updateAvailable': 'A new version v{version} is being downloaded...',
+    'toast.app.updateFailed': 'Update failed: {message}',
+    'toast.app.updateReady': 'Download complete and ready to restart',
+    'toast.app.restartInstall': 'Restart & Install',
+    'toast.lang.th': 'เปลี่ยนภาษาเป็นไทย',
+    'toast.lang.en': 'Language changed to English',
+    'toast.lang.ru': 'Язык изменён на русский',
+    'titlebar.minimize': 'Minimize window',
+    'titlebar.maximize': 'Maximize window',
+    'titlebar.close': 'Close',
   },
   ru: {
     'app.name': 'ThunderZ',
@@ -178,6 +318,7 @@ const i18n = {
     'settings.javadir': 'Путь Java',
     'settings.ram': 'Макс. RAM',
     'settings.browse': 'Обзор',
+    'settings.launcherPath': 'Путь лаунчера',
     'status.online': 'Онлайн',
     'modal.addLauncher': 'Добавить лаунчер',
     'modal.addServer': 'Добавить сервер',
@@ -204,6 +345,75 @@ const i18n = {
     'theme.bluered': 'Сине-красная',
     'theme.bluenavy': 'Тёмно-синяя',
     'theme.green': 'Зелёно-чёрная',
+    'common.start': 'Запустить',
+    'common.select': 'Выбрать',
+    'common.delete': 'Удалить',
+    'common.open': 'Открыть',
+    'common.clear': 'Очистить',
+    'common.connect': 'Подключиться',
+    'common.loading': 'Загрузка...',
+    'common.notSet': 'Ещё не настроено',
+    'common.readyConfigured': '✓ Настроено — готово',
+    'empty.launchers.none': 'Лаунчеров ещё нет',
+    'empty.launchers.addGuide': 'Лаунчеров ещё нет<br>Нажмите "Добавить лаунчер", чтобы начать',
+    'empty.servers.none': 'Серверов ещё нет',
+    'empty.servers.modal': 'Сохранённых серверов нет',
+    'launcher.path.title': 'Настройки пути лаунчера',
+    'launcher.path.note': '💾 Пути сохраняются автоматически — не нужно выбирать заново',
+    'launcher.path.status.empty': 'Ещё не настроено',
+    'launcher.path.status.ready': '✓ Настроено — готово',
+    'launcher.path.lunar.launch': 'Открыть Lunar Client',
+    'launcher.path.curse.launch': 'Открыть CurseForge',
+    'launcher.path.prism.launch': 'Открыть Prism Launcher',
+    'launcher.path.lunar.save': 'Путь Lunar Client сохранён',
+    'launcher.path.curse.save': 'Путь CurseForge сохранён',
+    'launcher.path.prism.save': 'Путь Prism Launcher сохранён',
+    'launcher.path.lunar.clear': 'Путь Lunar Client очищен',
+    'launcher.path.curse.clear': 'Путь CurseForge очищен',
+    'launcher.path.lunar.required': 'Сначала укажите путь Lunar Client в Настройки → Путь лаунчера',
+    'launcher.path.curse.required': 'Сначала укажите путь CurseForge в Настройки → Путь лаунчера',
+    'launcher.path.prism.required': 'Сначала укажите путь Prism Launcher в Настройки → Путь лаунчера',
+    'launcher.path.open': 'Открыть',
+    'modal.instance.prism': 'Выбрать экземпляр (Prism)',
+    'modal.instance.curse': 'Выбрать модпак (CurseForge)',
+    'modal.instance.desc': 'Выберите экземпляр для запуска',
+    'modal.instance.descWithServer': 'После запуска будет подключён сервер {ip}',
+    'modal.instance.loading': 'Загрузка...',
+    'modal.instance.launch': 'Открыть',
+    'common.launching': 'Открытие {name}',
+    'common.launchingToServer': 'Открытие {name} → подключение к {server} ({ip})',
+    'toast.theme.changed': 'Тема изменена на "{name}"',
+    'toast.launcher.add': 'Добавлен "{name}"',
+    'toast.launcher.select': 'Выбран "{name}" как основной лаунчер',
+    'toast.launcher.delete': 'Удалён "{name}"',
+    'toast.launcher.requireOne': 'Нужен хотя бы 1 лаунчер',
+    'toast.launcher.missing': 'Лаунчер не найден',
+    'toast.launcher.addMissingName': 'Введите название лаунчера',
+    'toast.launcher.addMissingPath': 'Введите путь лаунчера',
+    'toast.launcher.previewOnly': 'Эта функция доступна только в приложении Electron',
+    'toast.server.added': 'Добавлен сервер "{name}"',
+    'toast.server.delete': 'Удалён сервер "{name}"',
+    'toast.server.addMissingName': 'Введите название сервера',
+    'toast.server.addMissingIp': 'Введите IP сервера',
+    'toast.launcher.chooseInstance': 'Сначала выберите экземпляр',
+    'toast.launcher.launchFailed': 'Не удалось открыть: {error}',
+    'toast.launcher.launchGeneric': 'Не удалось запустить лаунчер',
+    'toast.launcher.opened': 'Открыт {name}: {instance}{server}',
+    'toast.launcher.pathSaved': 'Путь {name} сохранён',
+    'toast.launcher.pathCleared': 'Путь {name} очищен',
+    'toast.launcher.requiredPath': 'Сначала укажите путь для {name}',
+    'toast.launcher.opening': 'Открытие {name}...',
+    'toast.app.ready': 'ThunderZ Launcher готов!',
+    'toast.app.updateAvailable': 'Новая версия v{version} загружается...',
+    'toast.app.updateFailed': 'Обновление не удалось: {message}',
+    'toast.app.updateReady': 'Загрузка завершена, готово к перезапуску',
+    'toast.app.restartInstall': 'Перезапустить и установить',
+    'toast.lang.th': 'Переключено на тайский',
+    'toast.lang.en': 'Language changed to English',
+    'toast.lang.ru': 'Язык изменён на русский',
+    'titlebar.minimize': 'Свернуть окно',
+    'titlebar.maximize': 'Развернуть окно',
+    'titlebar.close': 'Закрыть',
   }
 };
 
@@ -241,8 +451,10 @@ function loadState() {
     const saved = localStorage.getItem('thunderz-state');
     if (saved) {
       const parsed = JSON.parse(saved);
-      const { launchers: _l, servers, launcherPaths, ...rest } = parsed;
+      const { launchers, servers, launcherPaths, ...rest } = parsed;
       state = { ...state, ...rest };
+      // Bug fix: restore user-saved launchers (was silently discarded before)
+      if (launchers && Array.isArray(launchers) && launchers.length > 0) state.launchers = launchers;
       if (servers && Array.isArray(servers)) state.servers = servers;
       if (launcherPaths) state.launcherPaths = { ...state.launcherPaths, ...launcherPaths };
       // migrate จาก playtime เก่า (หน่วยชั่วโมง) → playtimeSeconds
@@ -258,14 +470,26 @@ function saveState() {
 }
 
 // ===== Translate =====
-function t(key) {
-  return (i18n[state.lang] && i18n[state.lang][key]) || i18n['th'][key] || key;
+function t(key, params = {}) {
+  let text = (i18n[state.lang] && i18n[state.lang][key]) || i18n['th'][key] || key;
+  Object.entries(params).forEach(([name, value]) => {
+    text = text.replace(new RegExp(`\\{${name}\\}`, 'g'), value);
+  });
+  return text;
 }
 
 function applyTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
-    el.textContent = t(key);
+    if (key) el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.dataset.i18nTitle;
+    if (key) el.title = t(key);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (key) el.placeholder = t(key);
   });
   document.documentElement.lang = state.lang === 'th' ? 'th' : (state.lang === 'ru' ? 'ru' : 'en');
 }
@@ -281,6 +505,11 @@ const themeNamesEn = {
   purple: 'Purple', white: 'White', darkblue: 'Dark Blue', bluered: 'Blue Red', bluenavy: 'Navy Blue', green: 'Green Black'
 };
 
+const themeNamesRu = {
+  dark: 'Тёмная', red: 'Красная', blue: 'Синяя', lightblue: 'Голубая',
+  purple: 'Фиолетовая', white: 'Белая', darkblue: 'Тёмно-синяя', bluered: 'Сине-красная', bluenavy: 'Тёмно-синяя', green: 'Зелёно-чёрная'
+};
+
 function applyTheme(theme) {
   document.body.className = document.body.className.replace(/theme-\w+/g, '').trim();
   document.body.classList.add(`theme-${theme}`);
@@ -290,7 +519,9 @@ function applyTheme(theme) {
     s.classList.toggle('active', s.dataset.theme === theme);
   });
 
-  const tLabel = state.lang === 'en' ? (themeNamesEn[theme] || theme) : (themeNames[theme] || theme);
+  const tLabel = state.lang === 'en'
+    ? (themeNamesEn[theme] || theme)
+    : (state.lang === 'ru' ? (themeNamesRu[theme] || theme) : (themeNames[theme] || theme));
   const statEl = document.getElementById('stat-theme');
   if (statEl) statEl.textContent = tLabel;
 
@@ -323,14 +554,14 @@ function renderLauncherCard(launcher, isHome = false) {
   card.innerHTML = `
     <div class="lc-top">
       <div class="lc-icon">${launcher.icon}</div>
-      ${isActive ? '<div class="lc-active-dot" title="กำลังใช้งาน"></div>' : ''}
+      ${isActive ? `<div class="lc-active-dot" title="${t('home.active')}"></div>` : ''}
     </div>
     <div class="lc-name">${launcher.name}</div>
     <div class="lc-path">${launcher.path}</div>
     <div class="lc-actions">
-      <button class="lc-btn primary" data-launch="${launcher.id}">▶ เริ่ม</button>
-      <button class="lc-btn" data-setactive="${launcher.id}">✓ เลือก</button>
-      <button class="lc-delete" data-delete="${launcher.id}" title="ลบ">✕</button>
+      <button class="lc-btn primary" data-launch="${launcher.id}">▶ ${t('common.start')}</button>
+      <button class="lc-btn" data-setactive="${launcher.id}">✓ ${t('common.select')}</button>
+      <button class="lc-delete" data-delete="${launcher.id}" title="${t('common.delete')}">✕</button>
     </div>
   `;
 
@@ -346,12 +577,12 @@ function renderLauncherCard(launcher, isHome = false) {
     updateActiveLauncherUI();
     renderHomeGrid();
     renderLaunchersGrid();
-    showToast('✓', `เลือก "${launcher.name}" เป็น Launcher หลักแล้ว`, 'success');
+    showToast('✓', t('toast.launcher.select', { name: launcher.name }), 'success');
   });
 
   card.querySelector(`[data-delete]`).addEventListener('click', (e) => {
     e.stopPropagation();
-    if (state.launchers.length <= 1) { showToast('⚠', 'ต้องมี Launcher อย่างน้อย 1 ตัว', 'error'); return; }
+    if (state.launchers.length <= 1) { showToast('⚠', t('toast.launcher.requireOne'), 'error'); return; }
     state.launchers = state.launchers.filter(l => l.id !== launcher.id);
     if (state.activeLauncher === launcher.id) state.activeLauncher = state.launchers[0].id;
     saveState();
@@ -359,7 +590,7 @@ function renderLauncherCard(launcher, isHome = false) {
     renderLaunchersGrid();
     updateActiveLauncherUI();
     updateStats();
-    showToast('🗑', `ลบ "${launcher.name}" แล้ว`);
+    showToast('🗑', t('toast.launcher.delete', { name: launcher.name }));
   });
 
   return card;
@@ -372,7 +603,7 @@ function renderHomeGrid() {
 
   const recent = state.launchers.slice(0, 4);
   if (recent.length === 0) {
-    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🚀</div>ยังไม่มี Launcher</div>';
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🚀</div>${t('empty.launchers.none')}</div>`;
     return;
   }
   recent.forEach(l => grid.appendChild(renderLauncherCard(l, true)));
@@ -384,7 +615,7 @@ function renderLaunchersGrid() {
   grid.innerHTML = '';
 
   if (state.launchers.length === 0) {
-    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🚀</div>ยังไม่มี Launcher<br>กดปุ่ม "เพิ่ม Launcher" เพื่อเริ่มต้น</div>';
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🚀</div>${t('empty.launchers.addGuide')}</div>`;
     return;
   }
   state.launchers.forEach(l => grid.appendChild(renderLauncherCard(l)));
@@ -397,7 +628,7 @@ function renderServersList() {
   list.innerHTML = '';
 
   if (state.servers.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🌐</div>ยังไม่มีเซิร์ฟเวอร์</div>';
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">🌐</div>${t('empty.servers.none')}</div>`;
     return;
   }
 
@@ -415,8 +646,8 @@ function renderServersList() {
         <span class="ping-value">...</span>
       </div>
       <div class="server-actions">
-        <button class="btn-outline small" data-connect="${server.id}">เชื่อมต่อ</button>
-        <button class="btn-outline small" data-del-server="${server.id}" style="color:var(--danger);border-color:var(--danger)">ลบ</button>
+        <button class="btn-outline small" data-connect="${server.id}">${t('common.connect')}</button>
+        <button class="btn-outline small" data-del-server="${server.id}" style="color:var(--danger);border-color:var(--danger)">${t('common.delete')}</button>
       </div>
     `;
 
@@ -447,7 +678,7 @@ function renderServersList() {
       saveState();
       renderServersList();
       updateStats();
-      showToast('🗑', `ลบ "${server.name}" แล้ว`);
+      showToast('🗑', t('toast.server.delete', { name: server.name }));
     });
 
     list.appendChild(item);
@@ -478,6 +709,7 @@ function updateActiveLauncherUI() {
 }
 
 function getVersion(name) {
+  // Bug fix: use version from the launcher object directly before falling back to hardcoded map
   const active = state.launchers.find(l => l.name === name);
   if (active && active.version) return active.version;
   const versions = { 'Lunar Client': '3.2.7', 'CurseForge': '1.9.2', 'Official Launcher': '3.0.0' };
@@ -500,7 +732,9 @@ function updateStats() {
   if (el('stat-servers')) el('stat-servers').textContent = state.servers.length;
   if (el('stat-playtime')) el('stat-playtime').textContent = formatPlaytime(state.playtimeSeconds);
 
-  const tLabel = state.lang === 'en' ? (themeNamesEn[state.theme] || state.theme) : (themeNames[state.theme] || state.theme);
+  const tLabel = state.lang === 'en'
+    ? (themeNamesEn[state.theme] || state.theme)
+    : (state.lang === 'ru' ? (themeNamesRu[state.theme] || state.theme) : (themeNames[state.theme] || state.theme));
   if (el('stat-theme')) el('stat-theme').textContent = tLabel;
 }
 
@@ -523,7 +757,7 @@ function openChooseServerModal(launcherId) {
   list.innerHTML = '';
 
   if (state.servers.length === 0) {
-    list.innerHTML = '<div class="no-server-msg">ยังไม่มีเซิร์ฟเวอร์ที่บันทึกไว้</div>';
+    list.innerHTML = `<div class="no-server-msg">${t('empty.servers.modal')}</div>`;
   } else {
     state.servers.forEach(server => {
       const item = document.createElement('div');
@@ -559,9 +793,9 @@ async function openInstanceModal(type, exePath, server) {
   const loading = document.getElementById('instance-loading');
   const list = document.getElementById('instance-choose-list');
 
-  if (title) title.textContent = type === 'prism' ? '🔷 เลือก Instance (Prism)' : '🔥 เลือก Modpack (CurseForge)';
-  if (desc) desc.textContent = server ? `จะเข้าเซิร์ฟเวอร์ ${server.ip} หลังเปิด instance` : 'เลือก instance ที่ต้องการเปิด';
-  if (loading) { loading.style.display = 'block'; loading.textContent = '⏳ กำลังโหลด...'; }
+  if (title) title.textContent = type === 'prism' ? `🔷 ${t('modal.instance.prism')}` : `🔥 ${t('modal.instance.curse')}`;
+  if (desc) desc.textContent = server ? t('modal.instance.descWithServer', { ip: server.ip }) : t('modal.instance.desc');
+  if (loading) { loading.style.display = 'block'; loading.textContent = `⏳ ${t('common.loading')}`; }
   if (list) list.style.display = 'none';
 
   openModal('modal-choose-instance');
@@ -574,7 +808,7 @@ async function openInstanceModal(type, exePath, server) {
   if (loading) loading.style.display = 'none';
 
   if (!result.success) {
-    if (loading) { loading.style.display = 'block'; loading.textContent = '❌ ' + result.error; }
+    if (loading) { loading.style.display = 'block'; loading.textContent = `❌ ${result.error}`; }
     return;
   }
 
@@ -603,12 +837,12 @@ async function openInstanceModal(type, exePath, server) {
 
 function doLaunch(launcherId, serverId = null) {
   const launcher = state.launchers.find(l => l.id === launcherId);
-  if (!launcher) { showToast('❌', 'ไม่พบ Launcher', 'error'); return; }
+  if (!launcher) { showToast('❌', t('toast.launcher.missing'), 'error'); return; }
 
   const server = serverId ? state.servers.find(s => s.id === serverId) : null;
 
-  let msg = `กำลังเปิด ${launcher.name}`;
-  if (server) msg += ` → เข้า ${server.name} (${server.ip})`;
+  let msg = t('common.launching', { name: launcher.name });
+  if (server) msg = t('common.launchingToServer', { name: launcher.name, server: server.name, ip: server.ip });
 
   showToast('🚀', msg, 'success');
   closeModal('modal-choose-server');
@@ -630,17 +864,17 @@ function doLaunch(launcherId, serverId = null) {
     if (isLunar && state.launcherPaths.lunar) {
       resolvedPath = state.launcherPaths.lunar;
     } else if (isLunar && !state.launcherPaths.lunar) {
-      showToast('⚠', 'กรุณาตั้งค่า Path ของ Lunar Client ใน Settings → Launcher Path ก่อน', 'error');
+      showToast('⚠', t('launcher.path.lunar.required'), 'error');
       return;
     } else if (isCurse && state.launcherPaths.curse) {
       resolvedPath = state.launcherPaths.curse;
     } else if (isCurse && !state.launcherPaths.curse) {
-      showToast('⚠', 'กรุณาตั้งค่า Path ของ CurseForge ใน Settings → Launcher Path ก่อน', 'error');
+      showToast('⚠', t('launcher.path.curse.required'), 'error');
       return;
     } else if (isPrism && state.launcherPaths.prism) {
       resolvedPath = state.launcherPaths.prism;
     } else if (isPrism && !state.launcherPaths.prism) {
-      showToast('⚠', 'กรุณาตั้งค่า Path ของ Prism Launcher ใน Settings → Launcher Path ก่อน', 'error');
+      showToast('⚠', t('launcher.path.prism.required'), 'error');
       return;
     }
 
@@ -671,7 +905,7 @@ function doLaunch(launcherId, serverId = null) {
       // Launcher อื่น: spawn ปกติ
       const args = server ? ['--server', server.ip, '--port', String(server.port)] : [];
       window.electronAPI.launchApp(resolvedPath, args).then(result => {
-        if (result && !result.success) showToast('❌', result.error || 'เปิด Launcher ไม่สำเร็จ', 'error');
+        if (result && !result.success) showToast('❌', result.error || t('toast.launcher.launchGeneric'), 'error');
       });
     }
   }
@@ -738,7 +972,7 @@ function setLanguage(lang) {
   applyTranslations();
   updateStats();
   updateActiveLauncherUI();
-  showToast('🌐', lang === 'th' ? 'เปลี่ยนภาษาเป็นไทย' : lang === 'en' ? 'Language changed to English' : 'Язык изменён на русский', 'success');
+  showToast('🌐', lang === 'th' ? t('toast.lang.th') : lang === 'en' ? t('toast.lang.en') : t('toast.lang.ru'), 'success');
 }
 
 // ===== Titlebar Controls =====
@@ -790,8 +1024,8 @@ function bindEvents() {
     const path = document.getElementById('launcher-path').value.trim();
     const icon = document.getElementById('launcher-icon').value.trim() || '🎮';
 
-    if (!name) { showToast('⚠', 'กรุณาใส่ชื่อ Launcher', 'error'); return; }
-    if (!path) { showToast('⚠', 'กรุณาใส่ Path ของ Launcher', 'error'); return; }
+    if (!name) { showToast('⚠', t('toast.launcher.addMissingName'), 'error'); return; }
+    if (!path) { showToast('⚠', t('toast.launcher.addMissingPath'), 'error'); return; }
 
     const newLauncher = { id: Date.now(), name, path, icon, version: '1.0.0' };
     state.launchers.push(newLauncher);
@@ -805,7 +1039,7 @@ function bindEvents() {
     renderHomeGrid();
     renderLaunchersGrid();
     updateStats();
-    showToast('✓', `เพิ่ม "${name}" แล้ว`, 'success');
+    showToast('✓', t('toast.launcher.add', { name }), 'success');
   });
 
   // Browse launcher file (Electron only)
@@ -814,7 +1048,7 @@ function bindEvents() {
       const filePath = await window.electronAPI.browseFile('exe');
       if (filePath) document.getElementById('launcher-path').value = filePath;
     } else {
-      showToast('ℹ', 'ฟีเจอร์นี้ใช้ได้เฉพาะใน Electron App', '');
+      showToast('ℹ', t('toast.launcher.previewOnly'), '');
     }
   });
 
@@ -826,8 +1060,8 @@ function bindEvents() {
     const ip = document.getElementById('server-ip').value.trim();
     const port = parseInt(document.getElementById('server-port').value) || 25565;
 
-    if (!name) { showToast('⚠', 'กรุณาใส่ชื่อเซิร์ฟเวอร์', 'error'); return; }
-    if (!ip) { showToast('⚠', 'กรุณาใส่ IP เซิร์ฟเวอร์', 'error'); return; }
+    if (!name) { showToast('⚠', t('toast.server.addMissingName'), 'error'); return; }
+    if (!ip) { showToast('⚠', t('toast.server.addMissingIp'), 'error'); return; }
 
     const icons = ['🌐', '⚔️', '🏰', '🎮', '🌍', '💎', '🛡️', '🗡️'];
     const icon = icons[Math.floor(Math.random() * icons.length)];
@@ -842,7 +1076,7 @@ function bindEvents() {
     closeModal('modal-add-server');
     renderServersList();
     updateStats();
-    showToast('✓', `เพิ่มเซิร์ฟเวอร์ "${name}" แล้ว`, 'success');
+    showToast('✓', t('toast.server.added', { name }), 'success');
   });
 
   // Launch with/without server
@@ -853,22 +1087,22 @@ function bindEvents() {
   // Instance modal launch button
   document.getElementById('btn-launch-with-instance')?.addEventListener('click', async () => {
     const { type, exePath, server, selected } = _instancePending;
-    if (!selected) { showToast('⚠', 'กรุณาเลือก instance ก่อน', 'error'); return; }
+    if (!selected) { showToast('⚠', t('toast.launcher.chooseInstance'), 'error'); return; }
     closeModal('modal-choose-instance');
 
     if (type === 'prism') {
       const ip = server ? server.ip : null;
       const port = server ? server.port : null;
       const result = await window.electronAPI.launchPrism(exePath, selected.id, ip, port);
-      if (!result.success) showToast('❌', result.error, 'error');
-      else showToast('🚀', `เปิด Prism: ${selected.name}${server ? ' → ' + server.ip : ''}`, 'success');
+      if (!result.success) showToast('❌', t('toast.launcher.launchFailed', { error: result.error }), 'error');
+      else showToast('🚀', t('toast.launcher.opened', { name: 'Prism', instance: selected.name, server: server ? ` → ${server.ip}` : '' }), 'success');
     } else {
       // CurseForge: ใช้ launchCurse API ที่ส่ง --launch และ --server argument จริง
       const ip = server ? server.ip : null;
       const port = server ? server.port : null;
       const result = await window.electronAPI.launchCurse(exePath, selected.id, ip, port);
-      if (!result.success) showToast('❌', result.error, 'error');
-      else showToast('🚀', `เปิด CurseForge: ${selected.name}${server ? ' → ' + server.ip : ''}`, 'success');
+      if (!result.success) showToast('❌', t('toast.launcher.launchFailed', { error: result.error }), 'error');
+      else showToast('🚀', t('toast.launcher.opened', { name: 'CurseForge', instance: selected.name, server: server ? ` → ${server.ip}` : '' }), 'success');
     }
   });
 
@@ -892,7 +1126,8 @@ function bindEvents() {
   document.querySelectorAll('.theme-swatch').forEach(swatch => {
     swatch.addEventListener('click', () => {
       applyTheme(swatch.dataset.theme);
-      showToast('🎨', `เปลี่ยนธีมเป็น "${swatch.querySelector('span').textContent}"`, 'success');
+      const label = swatch.querySelector('span')?.textContent || swatch.dataset.theme;
+      showToast('🎨', t('toast.theme.changed', { name: label }), 'success');
     });
   });
 
@@ -939,11 +1174,11 @@ function updateLauncherPathUI(type) {
   if (input)  input.value = path;
 
   if (path) {
-    if (status)  { status.textContent = '✓ ตั้งค่าแล้ว — พร้อมใช้งาน'; status.className = 'lpc-status ok'; }
+    if (status)  { status.textContent = t('launcher.path.status.ready'); status.className = 'lpc-status ok'; }
     if (indic)   indic.classList.add('active');
     if (launchBtn) launchBtn.disabled = false;
   } else {
-    if (status)  { status.textContent = 'ยังไม่ได้ตั้งค่า'; status.className = 'lpc-status'; }
+    if (status)  { status.textContent = t('launcher.path.status.empty'); status.className = 'lpc-status'; }
     if (indic)   indic.classList.remove('active');
     if (launchBtn) launchBtn.disabled = true;
   }
@@ -967,7 +1202,7 @@ function initLauncherPathPanel() {
       state.launcherPaths.lunar = filePath;
       saveState();
       updateLauncherPathUI('lunar');
-      showToast('💾', 'บันทึก path Lunar Client แล้ว', 'success');
+      showToast('💾', t('launcher.path.lunar.save'), 'success');
     }
   });
 
@@ -976,7 +1211,7 @@ function initLauncherPathPanel() {
     state.launcherPaths.lunar = '';
     saveState();
     updateLauncherPathUI('lunar');
-    showToast('🗑', 'ล้าง path Lunar Client แล้ว');
+    showToast('🗑', t('launcher.path.lunar.clear'));
   });
 
   // --- Lunar: Launch ---
@@ -996,7 +1231,7 @@ function initLauncherPathPanel() {
       state.launcherPaths.curse = filePath;
       saveState();
       updateLauncherPathUI('curse');
-      showToast('💾', 'บันทึก path CurseForge แล้ว', 'success');
+      showToast('💾', t('launcher.path.curse.save'), 'success');
     }
   });
 
@@ -1005,7 +1240,7 @@ function initLauncherPathPanel() {
     state.launcherPaths.curse = '';
     saveState();
     updateLauncherPathUI('curse');
-    showToast('🗑', 'ล้าง path CurseForge แล้ว');
+    showToast('🗑', t('launcher.path.curse.clear'));
   });
 
   // --- CurseForge: Launch ---
@@ -1014,12 +1249,17 @@ function initLauncherPathPanel() {
   });
 
   document.getElementById('btn-browse-prism')?.addEventListener('click', async () => {
-    const filePath = await window.electronAPI.browseFile('exe');
+    let filePath = null;
+    if (window.electronAPI) {
+      filePath = await window.electronAPI.browseFile('exe');
+    } else {
+      filePath = prompt('(Preview) ใส่ path ทดสอบ:', 'C:\\Program Files\\PrismLauncher\\prismlauncher.exe');
+    }
     if (filePath) {
       state.launcherPaths.prism = filePath;
       saveState();
       updateLauncherPathUI('prism');
-      showToast('✅', 'ตั้งค่า Prism Launcher Path แล้ว', 'success');
+      showToast('✅', t('launcher.path.prism.save'), 'success');
     }
   });
 
@@ -1037,14 +1277,14 @@ function initLauncherPathPanel() {
 // เปิด .exe โดยตรงจาก path (ใช้กับ Launcher Path panel)
 async function doLaunchByPath(name, exePath) {
   if (!exePath) {
-    showToast('⚠', `กรุณาตั้งค่า path ของ ${name} ก่อน`, 'error');
+    showToast('⚠', t('toast.launcher.requiredPath', { name }), 'error');
     return;
   }
-  showToast('🚀', `กำลังเปิด ${name}...`, 'success');
+  showToast('🚀', t('toast.launcher.opening', { name }), 'success');
   if (window.electronAPI) {
     const result = await window.electronAPI.launchApp(exePath, []);
     if (!result.success) {
-      showToast('❌', `เปิดไม่ได้: ${result.error}`, 'error');
+      showToast('❌', t('toast.launcher.launchFailed', { error: result.error }), 'error');
     }
   }
 }
@@ -1059,9 +1299,12 @@ function startPlaytimeSession() {
     clearInterval(_playtimeInterval);
   }
   _sessionStart = Date.now();
+  // Bug fix: track elapsed time based on actual wall-clock difference
+  // instead of blindly incrementing by 1 each tick (which drifts)
+  let _lastSaved = state.playtimeSeconds || 0;
   _playtimeInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - _sessionStart) / 1000);
-    state.playtimeSeconds = (state.playtimeSeconds || 0) + 1;
+    state.playtimeSeconds = _lastSaved + elapsed;
     saveState();
     updateStats();
   }, 1000);
@@ -1072,8 +1315,8 @@ function initAutoUpdater() {
   if (!window.electronAPI) return;
 
   window.electronAPI.onUpdateAvailable((version) => {
-    showToast('🔔', `มีเวอร์ชันใหม่ v${version} กำลังดาวน์โหลด...`, 'success');
-    showUpdateBar(`กำลังดาวน์โหลด v${version}...`, 0);
+    showToast('🔔', t('toast.app.updateAvailable', { version }), 'success');
+    showUpdateBar(t('toast.app.updateAvailable', { version }), 0);
   });
 
   window.electronAPI.onUpdateProgress((percent) => {
@@ -1085,11 +1328,11 @@ function initAutoUpdater() {
   });
 
   window.electronAPI.onUpdateNone(() => {
-    console.log('แอปเป็นเวอร์ชันล่าสุดแล้ว');
+    console.log('App is already up to date');
   });
 
   window.electronAPI.onUpdateError((msg) => {
-    showToast('⚠', `อัพเดทล้มเหลว: ${msg}`, 'error');
+    showToast('⚠', t('toast.app.updateFailed', { message: msg }), 'error');
   });
 }
 
@@ -1114,20 +1357,20 @@ function updateProgressBar(percent) {
   const fill = document.getElementById('update-bar-fill');
   const text = document.getElementById('update-bar-text');
   if (fill) fill.style.width = `${percent}%`;
-  if (text) text.textContent = `ดาวน์โหลด... ${percent}%`;
+  if (text) text.textContent = `${t('common.loading')} ${percent}%`;
 }
 
 function showUpdateBarReady() {
   const text = document.getElementById('update-bar-text');
   const track = document.getElementById('update-bar-track');
-  if (text) text.textContent = '✅ ดาวน์โหลดเสร็จแล้ว พร้อม Restart';
+  if (text) text.textContent = '✅ ' + t('toast.app.updateReady');
   if (track) track.style.display = 'none';
 
   const bar = document.getElementById('update-bar');
   if (bar) {
     const btn = document.createElement('button');
     btn.id = 'update-install-btn';
-    btn.textContent = 'Restart & Install';
+    btn.textContent = t('toast.app.restartInstall');
     btn.addEventListener('click', () => window.electronAPI.installUpdate());
     bar.appendChild(btn);
   }
@@ -1156,6 +1399,16 @@ function init() {
   const ramDisplay = document.getElementById('ram-value-display');
   if (ramDisplay) ramDisplay.textContent = `${state.maxRam || 4} GB`;
 
+  // Bug fix: fetch real version from main process instead of relying on hardcoded HTML
+  if (window.electronAPI && window.electronAPI.getAppVersion) {
+    window.electronAPI.getAppVersion().then(ver => {
+      const badge = document.getElementById('app-version-badge');
+      const desc  = document.getElementById('app-version-desc');
+      if (badge) badge.textContent = `v${ver}`;
+      if (desc)  desc.textContent  = `ThunderZ Launcher v${ver}`;
+    });
+  }
+
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -1163,7 +1416,7 @@ function init() {
     }
   });
 
-  showToast('⚡', 'ThunderZ Launcher พร้อมใช้งาน!', 'success');
+  showToast('⚡', t('toast.app.ready'), 'success');
   initAutoUpdater();
 }
 

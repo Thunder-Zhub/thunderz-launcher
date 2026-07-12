@@ -24,4 +24,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onUpdateReady: (cb) => ipcRenderer.on('update:ready', () => cb()),
   onUpdateNone: (cb) => ipcRenderer.on('update:none', () => cb()),
   onUpdateError: (cb) => ipcRenderer.on('update:error', (_, msg) => cb(msg)),
+
+  // Bug fix: was handled in main but never exposed to renderer
+  getAppVersion: () => ipcRenderer.invoke('app:getVersion'),
 });

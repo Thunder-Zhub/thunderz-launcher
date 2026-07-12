@@ -18,13 +18,13 @@
     <span id="titlebar-title">ThunderZ Launcher</span>
   </div>
   <div id="titlebar-controls">
-    <button class="tb-btn" id="btn-minimize" title="ย่อหน้าต่าง">
+    <button class="tb-btn" id="btn-minimize" data-i18n-title="titlebar.minimize" title="ย่อหน้าต่าง">
       <svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="2" rx="1"/></svg>
     </button>
-    <button class="tb-btn" id="btn-maximize" title="ขยายหน้าต่าง">
+    <button class="tb-btn" id="btn-maximize" data-i18n-title="titlebar.maximize" title="ขยายหน้าต่าง">
       <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke-width="2"/></svg>
     </button>
-    <button class="tb-btn close" id="btn-close" title="ปิด">
+    <button class="tb-btn close" id="btn-close" data-i18n-title="titlebar.close" title="ปิด">
       <svg viewBox="0 0 24 24"><line x1="5" y1="5" x2="19" y2="19" stroke-width="2"/><line x1="19" y1="5" x2="5" y2="19" stroke-width="2"/></svg>
     </button>
   </div>
@@ -213,7 +213,7 @@
           </button>
           <button class="stab" data-stab="launchers-path">
             <svg viewBox="0 0 24 24" width="16"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            <span>Launcher Path</span>
+            <span data-i18n="settings.launcherPath">Launcher Path</span>
           </button>
         </div>
 
@@ -352,7 +352,7 @@
 
           <!-- Launcher Paths (ใหม่) -->
           <div class="stab-content" id="stab-launchers-path">
-            <h3>ตั้งค่า Path Launchers</h3>
+            <h3 data-i18n="launcher.path.title">ตั้งค่า Path Launchers</h3>
 
             <!-- Lunar Client -->
             <div class="launcher-path-card" id="lpc-lunar">
@@ -360,18 +360,18 @@
                 <span class="lpc-icon">🌙</span>
                 <div class="lpc-info">
                   <span class="lpc-name">Lunar Client</span>
-                  <span class="lpc-status" id="lunar-status-text">ยังไม่ได้ตั้งค่า</span>
+                  <span class="lpc-status" id="lunar-status-text" data-i18n="launcher.path.status.empty">ยังไม่ได้ตั้งค่า</span>
                 </div>
                 <div class="lpc-indicator" id="lunar-indicator"></div>
               </div>
               <div class="lpc-path-row">
                 <input type="text" id="lunar-path-input" class="form-input lpc-input" placeholder="C:\Path\To\LunarClient.exe" readonly>
-                <button class="btn-outline small" id="btn-browse-lunar">เลือก</button>
-                <button class="btn-outline small" id="btn-clear-lunar" style="color:var(--danger);border-color:var(--danger)">ล้าง</button>
+                <button class="btn-outline small" id="btn-browse-lunar" data-i18n="settings.browse">เลือก</button>
+                <button class="btn-outline small" id="btn-clear-lunar" style="color:var(--danger);border-color:var(--danger)" data-i18n="common.clear">ล้าง</button>
               </div>
               <button class="btn-primary lpc-launch-btn" id="btn-launch-lunar-settings" disabled>
                 <svg viewBox="0 0 24 24" width="16"><polygon points="5,3 19,12 5,21"/></svg>
-                เปิด Lunar Client
+                <span data-i18n="launcher.path.lunar.launch">เปิด Lunar Client</span>
               </button>
             </div>
 
@@ -381,18 +381,18 @@
                 <span class="lpc-icon">🔥</span>
                 <div class="lpc-info">
                   <span class="lpc-name">CurseForge</span>
-                  <span class="lpc-status" id="curse-status-text">ยังไม่ได้ตั้งค่า</span>
+                  <span class="lpc-status" id="curse-status-text" data-i18n="launcher.path.status.empty">ยังไม่ได้ตั้งค่า</span>
                 </div>
                 <div class="lpc-indicator" id="curse-indicator"></div>
               </div>
               <div class="lpc-path-row">
                 <input type="text" id="curse-path-input" class="form-input lpc-input" placeholder="C:\Path\To\CurseForge.exe" readonly>
-                <button class="btn-outline small" id="btn-browse-curse">เลือก</button>
-                <button class="btn-outline small" id="btn-clear-curse" style="color:var(--danger);border-color:var(--danger)">ล้าง</button>
+                <button class="btn-outline small" id="btn-browse-curse" data-i18n="settings.browse">เลือก</button>
+                <button class="btn-outline small" id="btn-clear-curse" style="color:var(--danger);border-color:var(--danger)" data-i18n="common.clear">ล้าง</button>
               </div>
               <button class="btn-primary lpc-launch-btn" id="btn-launch-curse-settings" disabled>
                 <svg viewBox="0 0 24 24" width="16"><polygon points="5,3 19,12 5,21"/></svg>
-                เปิด CurseForge
+                <span data-i18n="launcher.path.curse.launch">เปิด CurseForge</span>
               </button>
             </div>
 
@@ -401,20 +401,20 @@
                 <span class="lpc-icon">🔷</span>
                 <div class="lpc-info">
                   <span class="lpc-name">Prism Launcher</span>
-                  <span class="lpc-status" id="prism-status-text">ยังไม่ได้ตั้งค่า</span>
+                  <span class="lpc-status" id="prism-status-text" data-i18n="launcher.path.status.empty">ยังไม่ได้ตั้งค่า</span>
                 </div>
                 <div class="lpc-indicator" id="prism-indicator"></div>
               </div>
               <div class="lpc-path-row">
                 <input type="text" id="prism-path-input" class="form-input lpc-input" placeholder="C:\Path\To\prismlauncher.exe" readonly>
-                <button class="btn-outline small" id="btn-browse-prism">เลือก</button>
-                <button class="btn-outline small" id="btn-clear-prism">ล้าง</button>
+                <button class="btn-outline small" id="btn-browse-prism" data-i18n="settings.browse">เลือก</button>
+                <button class="btn-outline small" id="btn-clear-prism" data-i18n="common.clear">ล้าง</button>
               </div>
               <button class="btn-primary lpc-launch-btn" id="btn-launch-prism-settings" disabled>
-                🔷 เปิด Prism Launcher
+                🔷 <span data-i18n="launcher.path.prism.launch">เปิด Prism Launcher</span>
               </button>
             </div>
-            <p class="lpc-note">💾 Path บันทึกอัตโนมัติ — ไม่ต้องเลือกใหม่ทุกครั้ง</p>
+            <p class="lpc-note" data-i18n="launcher.path.note">💾 Path บันทึกอัตโนมัติ — ไม่ต้องเลือกใหม่ทุกครั้ง</p>
           </div>
 
         </div>
@@ -514,8 +514,8 @@
       <div class="server-choose-list" id="instance-choose-list" style="display:none"></div>
     </div>
     <div class="modal-footer">
-      <button class="btn-outline" data-close="modal-choose-instance">ยกเลิก</button>
-      <button class="btn-primary" id="btn-launch-with-instance">🚀 เปิด</button>
+      <button class="btn-outline" data-close="modal-choose-instance" data-i18n="form.cancel">ยกเลิก</button>
+      <button class="btn-primary" id="btn-launch-with-instance" data-i18n="modal.instance.launch">🚀 เปิด</button>
     </div>
   </div>
 </div>
