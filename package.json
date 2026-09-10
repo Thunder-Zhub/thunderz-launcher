@@ -1,6 +1,6 @@
 {
   "name": "thunderz-launcher",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "ThunderZ Minecraft Hub Launcher",
   "main": "main.js",
   "author": "ThunderZ",
@@ -32,8 +32,18 @@
     },
     "linux": {
       "target": [
-        { "target": "AppImage", "arch": ["x64"] },
-        { "target": "pacman", "arch": ["x64"] }
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "pacman",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
       "icon": "assets/icon.png",
       "category": "Game",
