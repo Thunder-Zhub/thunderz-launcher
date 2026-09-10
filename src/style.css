@@ -863,11 +863,31 @@ body {
   border-radius: 50%;
   background: var(--success);
   animation: blink 2s infinite;
+  flex-shrink: 0;
+}
+
+/* Bug fix: .ping-value had no rule at all, relying purely on inherited text color */
+.ping-value {
+  min-width: 34px;
+  text-align: right;
+  color: var(--text2);
+  font-variant-numeric: tabular-nums;
 }
 
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
+}
+
+#btn-refresh-ping svg {
+  transition: transform 0.3s ease;
+}
+#btn-refresh-ping.spinning svg {
+  animation: spin-ping 0.6s linear infinite;
+}
+@keyframes spin-ping {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .server-actions { display: flex; gap: 8px; }
@@ -1172,6 +1192,10 @@ body {
 
 .sco-name { font-size: 14px; color: var(--text); }
 .sco-ip { font-size: 12px; color: var(--text2); }
+
+/* Bug fix: make room for the ping badge appended to .sco-item without breaking layout */
+.sco-item > div:nth-child(2) { flex: 1; min-width: 0; }
+.sco-item .server-ping { flex-shrink: 0; margin-left: auto; }
 
 /* ===== Toast Notifications ===== */
 #toast-container {

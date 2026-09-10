@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   browseFile: (ext) => ipcRenderer.invoke('dialog:openFile', ext),
   browseDirectory: () => ipcRenderer.invoke('dialog:openDirectory'),
   pingServer: (host, port) => ipcRenderer.invoke('server:ping', host, port),
+  // เพิ่มระบบ ping หลายเซิร์ฟเวอร์พร้อมกัน — servers = [{ id, ip, port }]
+  pingServers: (servers) => ipcRenderer.invoke('server:pingBatch', servers),
   getPrismInstances: (exePath) => ipcRenderer.invoke('prism:getInstances', exePath),
   getCurseInstances: (exePath) => ipcRenderer.invoke('curse:getInstances', exePath),
   launchPrism: (exePath, instance, ip, port) => ipcRenderer.invoke('prism:launch', exePath, instance, ip, port),

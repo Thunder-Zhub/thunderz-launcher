@@ -542,6 +542,9 @@ function goToPage(page) {
   if (page === 'home') renderHomeGrid();
   if (page === 'launchers') renderLaunchersGrid();
   if (page === 'servers') renderServersList();
+  // Bug fix: ping interval only makes sense while the Servers page is visible —
+  // stop it when leaving so it doesn't keep polling in the background forever
+  else stopPingAutoRefresh();
 }
 
 // ===== Render Launchers =====
@@ -621,6 +624,84 @@ function renderLaunchersGrid() {
   state.launchers.forEach(l => grid.appendChild(renderLauncherCard(l)));
 }
 
+// ===== Server Ping System =====
+// เพิ่มระบบตรวจสอบ ping จากตัวเครื่องไปหาเซิร์ฟเวอร์ Minecraft
+// - ping ทุกเซิร์ฟเวอร์พร้อมกันแบบ batch (1 IPC call แทนที่จะยิงทีละตัว)
+// - รีเฟรชอัตโนมัติทุก 10 วินาทีตอนอยู่หน้า Servers
+// - เคลียร์ interval ทุกครั้งที่ออกจากหน้า กันไม่ให้ timer ค้าง/ซ้อนกัน (memory leak)
+let _pingInterval = null;
+const PING_REFRESH_MS = 10000;
+
+function setPingUI(serverId, result, loading = false) {
+  const pingEl = document.getElementById(`ping-${serverId}`);
+  if (!pingEl) return;
+  const dot = pingEl.querySelector('.ping-dot');
+  const val = pingEl.querySelector('.ping-value');
+  if (!dot || !val) return;
+
+  if (loading) {
+    dot.style.display = '';
+    dot.style.background = 'var(--text2)';
+    val.style.color = '';
+    val.textContent = '...';
+    return;
+  }
+
+  if (result && result.online) {
+    val.style.color = '';
+    val.textContent = result.ms + 'ms';
+    dot.style.display = '';
+    dot.style.background = result.ms < 150 ? 'var(--success)' : result.ms < 200 ? 'var(--warning)' : 'var(--danger)';
+  } else {
+    val.textContent = '✕';
+    val.style.color = 'var(--danger)';
+    dot.style.display = 'none';
+  }
+}
+
+// ping เซิร์ฟเวอร์ทั้งหมดที่ส่งเข้ามาพร้อมกัน แล้วอัปเดต UI ของแต่ละตัว
+async function refreshPings(servers, { showLoading = false } = {}) {
+  if (!window.electronAPI || !servers || servers.length === 0) return;
+
+  if (showLoading) servers.forEach(s => setPingUI(s.id, null, true));
+
+  // ใช้ batch API ถ้ามี (เร็วกว่า) ไม่งั้น fallback เป็นยิงทีละตัว
+  if (window.electronAPI.pingServers) {
+    try {
+      const results = await window.electronAPI.pingServers(
+        servers.map(s => ({ id: s.id, ip: s.ip, port: s.port }))
+      );
+      servers.forEach(s => setPingUI(s.id, results[s.id]));
+    } catch (e) {
+      servers.forEach(s => setPingUI(s.id, { online: false }));
+    }
+  } else if (window.electronAPI.pingServer) {
+    servers.forEach(server => {
+      window.electronAPI.pingServer(server.ip, server.port).then(result => {
+        setPingUI(server.id, result);
+      });
+    });
+  }
+}
+
+function startPingAutoRefresh() {
+  stopPingAutoRefresh();
+  if (state.servers.length === 0) return;
+  refreshPings(state.servers, { showLoading: true });
+  _pingInterval = setInterval(() => {
+    // Bug guard: re-read state.servers each tick (list may have changed since interval started)
+    if (state.servers.length === 0) { stopPingAutoRefresh(); return; }
+    refreshPings(state.servers);
+  }, PING_REFRESH_MS);
+}
+
+function stopPingAutoRefresh() {
+  if (_pingInterval) {
+    clearInterval(_pingInterval);
+    _pingInterval = null;
+  }
+}
+
 // ===== Render Servers =====
 function renderServersList() {
   const list = document.getElementById('servers-list');
@@ -629,6 +710,7 @@ function renderServersList() {
 
   if (state.servers.length === 0) {
     list.innerHTML = `<div class="empty-state"><div class="empty-icon">🌐</div>${t('empty.servers.none')}</div>`;
+    stopPingAutoRefresh();
     return;
   }
 
@@ -655,24 +737,6 @@ function renderServersList() {
       setActiveLauncherAndChooseServer(state.activeLauncher, server.id);
     });
 
-    // Real ping
-    if (window.electronAPI && window.electronAPI.pingServer) {
-      window.electronAPI.pingServer(server.ip, server.port).then(result => {
-        const pingEl = document.getElementById(`ping-${server.id}`);
-        if (!pingEl) return;
-        const dot = pingEl.querySelector('.ping-dot');
-        const val = pingEl.querySelector('.ping-value');
-        if (result.online) {
-          val.textContent = result.ms + 'ms';
-          dot.style.background = result.ms < 150 ? 'var(--success)' : result.ms < 200 ? 'var(--warning)' : 'var(--danger)';
-        } else {
-          val.textContent = '✕';
-          val.style.color = 'var(--danger)';
-          dot.style.display = 'none';
-        }
-      });
-    }
-
     item.querySelector(`[data-del-server]`).addEventListener('click', () => {
       state.servers = state.servers.filter(s => s.id !== server.id);
       saveState();
@@ -683,6 +747,9 @@ function renderServersList() {
 
     list.appendChild(item);
   });
+
+  // เริ่ม/รีสตาร์ทระบบตรวจสอบ ping อัตโนมัติทุกครั้งที่ render list ใหม่
+  startPingAutoRefresh();
 }
 
 // ===== Active Launcher UI =====
@@ -769,6 +836,10 @@ function openChooseServerModal(launcherId) {
           <div class="sco-name">${server.icon} ${server.name}</div>
           <div class="sco-ip">${server.ip}:${server.port}</div>
         </div>
+        <div class="server-ping" id="ping-modal-${server.id}">
+          <div class="ping-dot"></div>
+          <span class="ping-value">...</span>
+        </div>
       `;
       item.addEventListener('click', () => {
         document.querySelectorAll('.sco-item').forEach(i => i.classList.remove('selected'));
@@ -777,6 +848,29 @@ function openChooseServerModal(launcherId) {
       });
       list.appendChild(item);
     });
+
+    // ping เซิร์ฟเวอร์ทั้งหมดในโมดัลเลือกเซิร์ฟเวอร์ด้วย (แยก element id จากหน้า Servers)
+    if (window.electronAPI && window.electronAPI.pingServers) {
+      window.electronAPI.pingServers(state.servers.map(s => ({ id: s.id, ip: s.ip, port: s.port })))
+        .then(results => {
+          state.servers.forEach(s => {
+            const pingEl = document.getElementById(`ping-modal-${s.id}`);
+            if (!pingEl) return;
+            const dot = pingEl.querySelector('.ping-dot');
+            const val = pingEl.querySelector('.ping-value');
+            const result = results[s.id];
+            if (result && result.online) {
+              val.textContent = result.ms + 'ms';
+              dot.style.background = result.ms < 150 ? 'var(--success)' : result.ms < 200 ? 'var(--warning)' : 'var(--danger)';
+            } else {
+              val.textContent = '✕';
+              val.style.color = 'var(--danger)';
+              dot.style.display = 'none';
+            }
+          });
+        })
+        .catch(() => {});
+    }
   }
 
   openModal('modal-choose-server');
@@ -1050,6 +1144,14 @@ function bindEvents() {
     } else {
       showToast('ℹ', t('toast.launcher.previewOnly'), '');
     }
+  });
+
+  // Manual ping refresh button
+  document.getElementById('btn-refresh-ping')?.addEventListener('click', (e) => {
+    e.currentTarget.classList.add('spinning');
+    refreshPings(state.servers, { showLoading: true }).finally(() => {
+      setTimeout(() => e.currentTarget.classList.remove('spinning'), 400);
+    });
   });
 
   // Add server
