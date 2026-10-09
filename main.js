@@ -81,56 +81,195 @@ ipcMain.handle('window:maximize', () => {
   else mainWindow.maximize();
 });
 
-// ตรวจสอบว่าไฟล์มีอยู่จริงและ "รันได้" — บน Linux ไฟล์ที่มีอยู่แต่ไม่มี +x
-// bit จะ spawn ไม่สำเร็จด้วย EACCES ซึ่งข้อความ error เดิม (แค่เช็ค existsSync)
-// ทำให้ผู้ใช้เข้าใจผิดว่าไฟล์หาย ทั้งที่จริงคือ permission
-function checkExecutable(targetPath) {
-  if (!fs.existsSync(targetPath)) {
+// ===== Launch helpers (รองรับ Linux / Manjaro) =====
+// สาเหตุที่ Play เปิดไม่ได้บน Linux ในเวอร์ชันก่อนหน้า:
+//  1) spawn() ไม่มี handler ของ event 'error' และตอบ success ทันที ทั้งที่โปรแกรมอาจไม่ได้รันจริง
+//     (EACCES / ENOENT / ENOEXEC จะเกิดทีหลังแบบ async) และ stdio: 'ignore' ทำให้มองไม่เห็น error เลย
+//  2) AppImage ที่โหลดมาจากเบราว์เซอร์ไม่มี +x bit และ Manjaro บางเครื่องไม่มี libfuse2
+//  3) Lunar Client: shell.openExternal('lunarclient://...') บน Linux ต้องมี MIME handler ซึ่งมักไม่ถูกลงทะเบียน
+//  4) Prism: instances อาจอยู่ในโฟลเดอร์ที่ผู้ใช้ตั้งเอง (InstanceDir ใน prismlauncher.cfg)
+
+// libfuse2 จำเป็นสำหรับรัน AppImage ตรงๆ (Manjaro รุ่นใหม่ๆ ไม่ได้ติดตั้งมาให้เสมอไป)
+function hasFuse2() {
+  const libs = [
+    '/usr/lib/libfuse.so.2',
+    '/usr/lib64/libfuse.so.2',
+    '/usr/lib/x86_64-linux-gnu/libfuse.so.2',
+    '/lib/libfuse.so.2',
+    '/lib64/libfuse.so.2',
+  ];
+  return fs.existsSync('/dev/fuse') && libs.some((p) => fs.existsSync(p));
+}
+
+// ตรวจว่าไฟล์มีอยู่จริงและ "รันได้" — บน Linux ถ้าไม่มี +x จะลอง chmod +x ให้อัตโนมัติ
+// (AppImage ที่โหลดจากเว็บไม่มี +x เป็นค่าเริ่มต้น)
+function prepareExecutable(targetPath) {
+  if (!targetPath || !fs.existsSync(targetPath)) {
     return { ok: false, error: `ไม่พบไฟล์: ${targetPath}` };
+  }
+  let stat;
+  try {
+    stat = fs.statSync(targetPath);
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+  if (stat.isDirectory()) {
+    return { ok: false, error: `path นี้เป็นโฟลเดอร์ ไม่ใช่ไฟล์โปรแกรม: ${targetPath}` };
   }
   if (process.platform !== 'win32') {
     try {
       fs.accessSync(targetPath, fs.constants.X_OK);
     } catch {
-      return {
-        ok: false,
-        error: `ไฟล์ไม่มีสิทธิ์รัน (chmod +x): ${targetPath}`,
-      };
+      try {
+        fs.chmodSync(targetPath, stat.mode | 0o111);
+        fs.accessSync(targetPath, fs.constants.X_OK);
+      } catch {
+        return {
+          ok: false,
+          error: `ไฟล์ไม่มีสิทธิ์รัน และตั้งสิทธิ์ให้อัตโนมัติไม่ได้ (ลอง chmod +x หรือเช็คว่าไม่ได้อยู่ในไดรฟ์ที่ mount แบบ noexec เช่น NTFS): ${targetPath}`,
+        };
+      }
     }
   }
   return { ok: true };
 }
 
+// ตัวแปร environment ที่จะส่งให้โปรแกรมลูก — กันค่าที่รั่วมาจาก Electron/AppImage ของ launcher นี้เอง
+function buildLaunchEnv(exePath) {
+  const env = { ...process.env };
+  delete env.ELECTRON_RUN_AS_NODE; // ถ้าหลุดไป Lunar (Electron) จะกลายเป็น node เฉยๆ แล้วไม่เปิดหน้าต่าง
+  delete env.ELECTRON_NO_ATTACH_CONSOLE;
+  delete env.NODE_OPTIONS;
+  if (process.platform === 'linux') {
+    for (const k of ['APPIMAGE', 'APPDIR', 'ARGV0', 'OWD']) delete env[k];
+    // ไม่มี FUSE2 → ให้ AppImage แตกไฟล์ไปรันเอง แทนที่จะพังเงียบๆ
+    if (/\.appimage$/i.test(exePath) && !hasFuse2()) {
+      env.APPIMAGE_EXTRACT_AND_RUN = '1';
+    }
+  }
+  return env;
+}
+
+function describeSpawnError(err, exePath) {
+  switch (err && err.code) {
+    case 'EACCES':
+      return `ไม่มีสิทธิ์รันไฟล์ (chmod +x): ${exePath}`;
+    case 'ENOENT':
+      return `ไม่พบไฟล์ หรือไฟล์ขาด interpreter/ไลบรารีที่จำเป็น: ${exePath}`;
+    case 'ENOEXEC':
+      return `ไฟล์นี้ไม่ใช่โปรแกรมที่รันได้ (เลือกไฟล์ผิด หรือเป็นคนละสถาปัตยกรรม): ${exePath}`;
+    default:
+      return (err && err.message) || 'เปิดโปรแกรมไม่สำเร็จ';
+  }
+}
+
+function readLogTail(file, fromOffset, maxChars = 300) {
+  try {
+    const text = fs.readFileSync(file).subarray(fromOffset).toString('utf-8');
+    return text
+      .replace(/[<>&]/g, ' ') // toast ใน renderer ใช้ innerHTML
+      .trim()
+      .replace(/\s*\n\s*/g, ' | ')
+      .slice(-maxChars);
+  } catch {
+    return '';
+  }
+}
+
+// เปิดโปรแกรมแบบ detached และ "รอดูผลจริง" ก่อนตอบกลับ
+//  - spawn ล้มเหลว (EACCES/ENOENT/...) → success: false พร้อมข้อความที่อ่านรู้เรื่อง
+//  - (Linux/macOS) โปรแกรมปิดตัวทันทีด้วย exit code != 0 ภายใน ~2.5 วิ → success: false พร้อม stderr ท้ายๆ
+//  - output ถูกเก็บไว้ที่ <userData>/launch.log เพื่อใช้ debug
+function launchDetached(exePath, args = []) {
+  return new Promise((resolve) => {
+    const prep = prepareExecutable(exePath);
+    if (!prep.ok) return resolve({ success: false, error: prep.error });
+
+    const watchExit = process.platform !== 'win32'; // Windows ใช้แบบเดิม ไม่เปลี่ยนพฤติกรรม
+    let logFd = null;
+    let logFile = null;
+    let logStart = 0;
+    if (watchExit) {
+      try {
+        logFile = path.join(app.getPath('userData'), 'launch.log');
+        fs.mkdirSync(path.dirname(logFile), { recursive: true });
+        try {
+          if (fs.statSync(logFile).size > 1024 * 1024) fs.truncateSync(logFile, 0);
+        } catch {}
+        logFd = fs.openSync(logFile, 'a');
+        logStart = fs.fstatSync(logFd).size;
+      } catch {
+        logFd = null;
+      }
+    }
+
+    let child;
+    try {
+      child = spawn(exePath, args, {
+        detached: true,
+        stdio: logFd !== null ? ['ignore', logFd, logFd] : 'ignore',
+        shell: false,
+        env: buildLaunchEnv(exePath),
+        cwd: path.dirname(exePath),
+      });
+    } catch (err) {
+      if (logFd !== null) { try { fs.closeSync(logFd); } catch {} }
+      return resolve({ success: false, error: describeSpawnError(err, exePath) });
+    }
+    child.unref();
+
+    let settled = false;
+    let timer = null;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      if (logFd !== null) { try { fs.closeSync(logFd); } catch {} }
+      resolve(result);
+    };
+
+    // ต้องมี handler นี้เสมอ ไม่งั้น 'error' ที่เกิดทีหลังจะกลายเป็น uncaught exception ใน main process
+    child.on('error', (err) => finish({ success: false, error: describeSpawnError(err, exePath) }));
+
+    if (watchExit) {
+      child.on('exit', (code, signal) => {
+        if (code === 0) return finish({ success: true });
+        const tail = logFile ? readLogTail(logFile, logStart) : '';
+        const why = signal ? `signal ${signal}` : `exit code ${code}`;
+        finish({ success: false, error: `โปรแกรมปิดตัวทันที (${why})${tail ? ` — ${tail}` : ''}` });
+      });
+      timer = setTimeout(() => finish({ success: true }), 2500);
+    } else {
+      child.on('spawn', () => finish({ success: true }));
+    }
+  });
+}
+
 // Launch external app
 ipcMain.handle('launch:app', async (event, exePath, args = [], options = {}) => {
   try {
-    if (!exePath || exePath.trim() === '') {
+    if (!exePath || String(exePath).trim() === '') {
       return { success: false, error: 'ไม่ได้ตั้งค่า path ของ Launcher' };
     }
+    exePath = String(exePath).trim();
+    const safeArgs = Array.isArray(args) ? args.map(String) : [];
 
-    // Lunar Client: ใช้ shell.openExternal กับ lunarclient:// protocol
-    // บน Linux โปรโตคอลนี้ต้องมี .desktop entry ที่ลงทะเบียน MIME handler ไว้
-    // (ตัวติดตั้ง Lunar Client บน Linux จะลงทะเบียนให้เองตามปกติ)
-    if (options.lunarUrl) {
+    // Lunar Client พร้อม server: ใช้ lunarclient:// protocol
+    if (options && options.lunarUrl) {
+      if (typeof options.lunarUrl !== 'string' || !options.lunarUrl.startsWith('lunarclient://')) {
+        return { success: false, error: 'lunarclient URL ไม่ถูกต้อง' };
+      }
+      if (process.platform === 'linux') {
+        // บน Linux shell.openExternal ต้องพึ่ง .desktop MIME handler ซึ่ง AppImage ของ Lunar มักไม่ได้ลงทะเบียน
+        // (และ openExternal ไม่ error ให้เห็นแม้ไม่มี handler) จึงส่ง URL เป็น argument ให้ตัวโปรแกรมตรงๆ
+        // ซึ่งเป็นวิธีเดียวกับที่ xdg-open เรียกผ่าน Exec=... %U
+        return await launchDetached(exePath, [options.lunarUrl]);
+      }
       await shell.openExternal(options.lunarUrl);
       return { success: true };
     }
 
-    const check = checkExecutable(exePath);
-    if (!check.ok) {
-      return { success: false, error: check.error };
-    }
-
-    // AppImage บน Linux มักถูกดับเบิลคลิกเปิดตรงๆ ได้เหมือน exe ปกติเมื่อมี +x
-    // bit แล้ว จึง spawn ตรงได้โดยไม่ต้องผ่าน shell
-    const child = spawn(exePath, args, {
-      detached: true,
-      stdio: 'ignore',
-      shell: false,
-    });
-
-    child.unref();
-    return { success: true };
+    return await launchDetached(exePath, safeArgs);
   } catch (err) {
     return { success: false, error: err.message };
   }
@@ -231,32 +370,52 @@ ipcMain.handle('server:pingBatch', async (event, servers) => {
 // Read Prism Launcher instances
 ipcMain.handle('prism:getInstances', async (event, prismExePath) => {
   try {
-    const path = require('path');
     const os = require('os');
     const home = os.homedir();
+    const exeDir = prismExePath ? path.dirname(prismExePath) : null;
 
-    // Prism stores instances next to the exe on Windows, or in a
-    // platform-specific config dir on Linux. Manjaro users can have Prism
-    // installed 3 different ways (native package, AUR/manual, or Flatpak),
-    // each with its own instances path, so we check all of them.
-    const possibleDirs = process.platform === 'linux'
-      ? [
-          // instances folder shipped next to a portable/manually-placed binary
-          path.join(path.dirname(prismExePath), 'instances'),
-          // native package / manual install, follows XDG base dir spec
-          path.join(process.env.XDG_DATA_HOME || path.join(home, '.local', 'share'), 'PrismLauncher', 'instances'),
-          // some Prism builds use a lowercase, hyphenated dir name
-          path.join(process.env.XDG_DATA_HOME || path.join(home, '.local', 'share'), 'prismlauncher', 'instances'),
-          // Flatpak (org.prismlauncher.PrismLauncher), common on Manjaro/Arch via Flathub
-          path.join(home, '.var', 'app', 'org.prismlauncher.PrismLauncher', 'data', 'PrismLauncher', 'instances'),
-        ]
-      : [
-          path.join(path.dirname(prismExePath), 'instances'),
-          path.join(home, 'AppData', 'Roaming', 'PrismLauncher', 'instances'),
-          path.join(home, 'AppData', 'Local', 'Programs', 'Prism Launcher', 'instances'),
-        ];
+    // โฟลเดอร์ข้อมูลของ Prism (ที่เก็บ prismlauncher.cfg + instances)
+    // Manjaro ติดตั้งได้ 3 แบบ (แพ็กเกจ native/AUR, portable, Flatpak) แต่ละแบบอยู่คนละที่
+    let dataDirs;
+    if (process.platform === 'linux') {
+      const xdgData = process.env.XDG_DATA_HOME || path.join(home, '.local', 'share');
+      dataDirs = [
+        path.join(xdgData, 'PrismLauncher'),
+        path.join(xdgData, 'prismlauncher'),
+        path.join(home, '.local', 'share', 'PrismLauncher'),
+        // Flatpak (org.prismlauncher.PrismLauncher)
+        path.join(home, '.var', 'app', 'org.prismlauncher.PrismLauncher', 'data', 'PrismLauncher'),
+        exeDir, // portable / วางไว้ข้างไบนารี
+      ];
+    } else {
+      dataDirs = [
+        exeDir,
+        path.join(home, 'AppData', 'Roaming', 'PrismLauncher'),
+        path.join(home, 'AppData', 'Local', 'Programs', 'Prism Launcher'),
+      ];
+    }
+    dataDirs = dataDirs.filter(Boolean);
 
+    // ถ้าผู้ใช้ย้ายโฟลเดอร์ instances เอง Prism จะเก็บไว้ใน prismlauncher.cfg (InstanceDir=...)
+    const possibleDirs = [];
+    for (const d of dataDirs) {
+      try {
+        const cfg = fs.readFileSync(path.join(d, 'prismlauncher.cfg'), 'utf-8');
+        const m = cfg.match(/^InstanceDir=(.+)$/m);
+        if (m) {
+          let custom = m[1].trim();
+          if (custom.startsWith('~')) custom = path.join(home, custom.slice(1));
+          if (!path.isAbsolute(custom)) custom = path.join(d, custom);
+          possibleDirs.push(custom);
+        }
+      } catch {}
+    }
+    for (const d of dataDirs) possibleDirs.push(path.join(d, 'instances'));
+
+    const seen = new Set();
     for (const dir of possibleDirs) {
+      if (seen.has(dir)) continue;
+      seen.add(dir);
       if (fs.existsSync(dir)) {
         const entries = fs.readdirSync(dir, { withFileTypes: true });
         const instances = entries
@@ -328,18 +487,12 @@ ipcMain.handle('curse:getInstances', async (event, curseExePath) => {
 // Launch Prism with specific instance + optional server
 ipcMain.handle('prism:launch', async (event, exePath, instanceName, serverIp, serverPort) => {
   try {
-    // Bug fix: prism:launch was missing the exePath existence check that curse:launch has,
-    // causing a raw ENOENT spawn error instead of a friendly Thai message.
-    // Also now checks the +x bit on Linux, not just existence — see checkExecutable().
-    const check = checkExecutable(exePath);
-    if (!check.ok) {
-      return { success: false, error: check.error };
+    if (!exePath || String(exePath).trim() === '') {
+      return { success: false, error: 'ไม่ได้ตั้งค่า path ของ Prism Launcher' };
     }
-    const args = ['--launch', instanceName];
+    const args = ['--launch', String(instanceName)];
     if (serverIp) args.push('--server', `${serverIp}:${serverPort || 25565}`);
-    const child = spawn(exePath, args, { detached: true, stdio: 'ignore', shell: false });
-    child.unref();
-    return { success: true };
+    return await launchDetached(String(exePath).trim(), args);
   } catch (err) {
     return { success: false, error: err.message };
   }
@@ -348,16 +501,13 @@ ipcMain.handle('prism:launch', async (event, exePath, instanceName, serverIp, se
 // Launch CurseForge with specific instance + optional server
 ipcMain.handle('curse:launch', async (event, exePath, instanceName, serverIp, serverPort) => {
   try {
-    const check = checkExecutable(exePath);
-    if (!check.ok) {
-      return { success: false, error: check.error };
+    if (!exePath || String(exePath).trim() === '') {
+      return { success: false, error: 'ไม่ได้ตั้งค่า path ของ CurseForge' };
     }
     // CurseForge รองรับ --launch "InstanceName" และ --server ip:port
-    const args = ['--launch', instanceName];
+    const args = ['--launch', String(instanceName)];
     if (serverIp) args.push('--server', `${serverIp}:${serverPort || 25565}`);
-    const child = spawn(exePath, args, { detached: true, stdio: 'ignore', shell: false });
-    child.unref();
-    return { success: true };
+    return await launchDetached(String(exePath).trim(), args);
   } catch (err) {
     return { success: false, error: err.message };
   }
